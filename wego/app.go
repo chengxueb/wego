@@ -7,21 +7,14 @@ import (
 
 var (
 	WegoApp *Application
-	Config  *WegoConfig
 )
 
 func init() {
-	Config = NewConfig()
 	WegoApp = NewApplication()
 }
 
 func NewServer() *http.Server {
-	s := &http.Server{}
-	s.Addr = Config.WebConfig.Addr
-	s.ReadTimeout = Config.WebConfig.ReadTimeout
-	s.WriteTimeout = Config.WebConfig.WriteTimeout
-
-	return s
+	return &http.Server{}
 }
 
 func NewApplication() *Application {
@@ -39,6 +32,10 @@ type Application struct {
 
 func (this *Application) Run() {
 	var appRunning chan bool = make(chan bool)
+
+	WegoApp.Server.Addr = WConfig.WebConfig.Addr
+	WegoApp.Server.ReadTimeout = WConfig.WebConfig.ReadTimeout
+	WegoApp.Server.WriteTimeout = WConfig.WebConfig.WriteTimeout
 
 	go func() {
 		if err := WegoApp.Server.ListenAndServe(); err != nil {
